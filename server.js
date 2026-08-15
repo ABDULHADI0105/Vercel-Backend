@@ -6,6 +6,8 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const cowRoutes = require("./routes/cowRoutes");
+const contactRoutes = require("./routes/contactRoutes");
+
 
 const app = express();
 
@@ -19,6 +21,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/cows", cowRoutes);
+app.use("/api/contacts", contactRoutes);
 
 // MongoDB
 mongoose

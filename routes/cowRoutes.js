@@ -2,54 +2,118 @@ const express = require("express");
 const router = express.Router();
 
 const upload = require("../middleware/upload");
-const { addCow, updateCow, deleteCow } = require("../controllers/cowController");
+
+const {
+  addCow,
+  updateCow,
+  deleteCow,
+} = require("../controllers/cowController");
+
 const Cow = require("../models/Cow");
 
-// GET: All Cows
+// ==========================================
+// GET ALL COWS
+// ==========================================
+
 router.get("/", async (req, res) => {
   try {
-    const cows = await Cow.find();
-    res.status(200).json(cows);
+    const cows = await Cow.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      cows,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Get Cows Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch cows",
+      error: error.message,
+    });
   }
 });
 
-// GET: Single Cow by ID
+// ==========================================
+// GET SINGLE COW
+// ==========================================
+
 router.get("/:id", async (req, res) => {
   try {
     const cow = await Cow.findById(req.params.id);
+
     if (!cow) {
-      return res.status(404).json({ message: "Cow not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Cow not found",
+      });
     }
-    res.status(200).json(cow);
+
+    res.status(200).json({
+      success: true,
+      cow,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Get Cow Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch cow",
+      error: error.message,
+    });
   }
 });
 
-// POST: Add Cow
+// ==========================================
+// ADD COW
+// ==========================================
+
 router.post(
   "/add",
   upload.fields([
-    { name: "coverImage", maxCount: 1 },
-    { name: "galleryImages", maxCount: 10 },
-    { name: "video", maxCount: 1 },
+    {
+      name: "coverImage",
+      maxCount: 1,
+    },
+    {
+      name: "galleryImages",
+      maxCount: 10,
+    },
+    {
+      name: "cowVideo",
+      maxCount: 1,
+    },
   ]),
   addCow
 );
 
-// PUT: Update Cow (Complete details + optional cover image/video)
+// ==========================================
+// UPDATE COW
+// ==========================================
+
 router.put(
   "/:id",
   upload.fields([
-    { name: "coverImage", maxCount: 1 },
-    { name: "video", maxCount: 1 },
+    {
+      name: "coverImage",
+      maxCount: 1,
+    },
+    {
+      name: "galleryImages",
+      maxCount: 10,
+    },
+    {
+      name: "cowVideo",
+      maxCount: 1,
+    },
   ]),
   updateCow
 );
 
-// DELETE: Delete Cow
+// ==========================================
+// DELETE COW
+// ==========================================
+
 router.delete("/:id", deleteCow);
 
 module.exports = router;

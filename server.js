@@ -6,7 +6,6 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const cowRoutes = require("./routes/cowRoutes");
-const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
@@ -44,15 +43,12 @@ app.use("/api/auth", authRoutes);
 // Cows
 app.use("/api/cows", cowRoutes);
 
-// Contacts
-app.use("/api/contacts", contactRoutes);
-
 // ==========================================
 // API TEST
 // ==========================================
 
 app.get("/api", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     message: "Shahan Cattle Farm API is working 🚀",
   });
@@ -63,14 +59,14 @@ app.get("/api", (req, res) => {
 // ==========================================
 
 app.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     message: "🚀 Shahan Cattle Farm API Running...",
   });
 });
 
 // ==========================================
-// 404
+// 404 ROUTE
 // ==========================================
 
 app.use((req, res) => {
@@ -112,6 +108,6 @@ mongoose
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server Running on Port ${PORT}`);
 });
